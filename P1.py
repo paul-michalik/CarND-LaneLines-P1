@@ -43,12 +43,12 @@
 
 # ## Import Packages
 
-# In[1]:
+# In[84]:
 
 get_ipython().system('conda list opencv')
 
 
-# In[2]:
+# In[85]:
 
 #importing some useful packages
 import matplotlib.pyplot as plt
@@ -60,7 +60,7 @@ get_ipython().magic('matplotlib inline')
 
 # ## Read in an Image
 
-# In[3]:
+# In[86]:
 
 #reading in an image
 image = mpimg.imread('test_images/solidWhiteRight.jpg')
@@ -89,6 +89,11 @@ plt.imshow(image)  # if you wanted to show a single color channel image called '
 # Below are some helper functions to help get you started. They should look familiar from the lesson!
 
 # In[ ]:
+
+
+
+
+# In[87]:
 
 import math
 
@@ -183,13 +188,16 @@ def weighted_img(img, initial_img, α=0.8, β=1., λ=0.):
     """
     return cv2.addWeighted(initial_img, α, img, β, λ)
 
+def get_image_size(img):
+    return image.shape[0], image.shape[1]
+
 
 # ## Test Images
 # 
 # Build your pipeline to work on the images in the directory "test_images"  
 # **You should make sure your pipeline works well on these images before you try the videos.**
 
-# In[ ]:
+# In[88]:
 
 import os
 os.listdir("test_images/")
@@ -203,10 +211,64 @@ os.listdir("test_images/")
 # 
 # Try tuning the various parameters, especially the low and high Canny thresholds as well as the Hough lines parameters.
 
-# In[ ]:
+# In[126]:
 
 # TODO: Build your pipeline that will draw lane lines on the test_images
 # then save them to the test_images directory.
+def extract_lanes(image, ext_args):
+    current = grayscale(image)
+    current = gaussian_blur(current, ext_args.kernel_size)
+    current = canny(current, ext_args.canny_low, ext_args.canny_high)
+    current = region_of_interest(current, ext_args.region_quad);
+    current = hough_lines(current, 
+        ext_args.hough_rho,
+        ext_args.hough_theta,
+        ext_args.hough_threshhold,
+        ext_args.hough_min_line_length,
+        ext_args.hough_max_line_gap
+    )
+    
+    return current
+
+# move to next cell
+import collections
+
+ExtractionArgs = collections.namedtuple('ExtractionArgs',
+    [
+        'kernel_size',
+        'region_quad',
+        'canny_low',
+        'canny_high',
+        'hough_rho', # distance resolution in pixels of the Hough grid
+        'hough_theta', # angular resolution in radians of the Hough grid
+        'hough_threshhold', # minimum number of votes (intersections in Hough grid cell)
+        'hough_min_line_length', #minimum number of pixels making up a line
+        'hough_max_line_gap' # maximum gap in pixels between connectable line segments
+    ])
+
+ext_args = ExtractionArgs(
+    kernel_size = 3,
+    # assuming fixed image size 540 x 960
+    region_quad = np.array([[
+        (140, 540), 
+        (460, 300), 
+        (510, 300), 
+        (910, 540)
+    ]]),
+    canny_low = 50,
+    canny_high = 150,
+    hough_rho = 1,
+    hough_theta = np.pi/180,
+    hough_threshhold = 10,
+    hough_min_line_length = 40,
+    hough_max_line_gap = 10
+)
+
+test_dir = "test_images"
+for test_file in os.listdir(test_dir):
+    input_img = mpimg.imread(os.path.join(test_dir, test_file))
+    plt.imshow(extract_lanes(input_img, ext_args), cmap='gray')
+    plt.show()
 
 
 # ## Test on Videos
