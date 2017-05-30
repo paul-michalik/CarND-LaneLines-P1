@@ -43,7 +43,12 @@
 
 # ## Import Packages
 
-# In[ ]:
+# In[1]:
+
+get_ipython().system('conda list opencv')
+
+
+# In[2]:
 
 #importing some useful packages
 import matplotlib.pyplot as plt
@@ -55,7 +60,7 @@ get_ipython().magic('matplotlib inline')
 
 # ## Read in an Image
 
-# In[ ]:
+# In[3]:
 
 #reading in an image
 image = mpimg.imread('test_images/solidWhiteRight.jpg')
