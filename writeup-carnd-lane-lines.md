@@ -20,10 +20,10 @@ My pipeline consisted of 5 steps:
 4. Masked the unimportant regions from the image
 5. Apply the Hough transform and extracted candidate edges 
  
-In order to draw a single line on the left and right lanes, I modified the draw_lines() function as follows:
-1. Filtered the set of candidate edges based on slope yielding two sets of edges representing fragments of the left and right lanes with negative and positive slopes. The values had to be non-zero and contained in a specified interval detected by experiment. Helper function separate_edges
-2. Approximated the line segments by a polynomial applying a least square. Experimented with linear and quadratic polynomials. Helper functions unpack_lines, poly1d.
-3. Determined the range for evaluation of the polynomial and extrapolated the curves representing the left and right lanes. After conversion to integers drew lines onto given image. Helper function draw_full_lanes
+In order to draw a single line on the left and right lanes, I modified the ``draw_lines`` function as follows:
+1. Filtered the set of candidate edges based on slope yielding two sets of edges representing fragments of the left and right lanes with negative and positive slopes. The values had to be non-zero and contained in a specified interval detected by experiment. Helper function ``separate_edges``
+2. Approximated the line segments by a polynomial applying a least square. Experimented with linear and quadratic polynomials. Helper functions ``unpack_lines``, ``poly1d``.
+3. Determined the range for evaluation of the polynomial and extrapolated the curves representing the left and right lanes. After conversion to integers drew lines onto given image. Helper function ``draw_full_lanes``
 
 ### 2. Identify potential shortcomings with your current pipeline
 The performance of the algorithm depends on a set of parameters determined by experiments. However the data set for experimentation was quite limited as was the time to perform a more thorough analysis. Therefore I assume that the performance of this pipeline would be degrading if the data deviates from observed samples. The data set challenge.mp4 proves this assumption quite well.
